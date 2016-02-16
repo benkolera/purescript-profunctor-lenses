@@ -30,6 +30,12 @@ stateTest :: Tuple Int String
 stateTest = evalState go (Tuple 4 ["Foo", "Bar"]) where
   go = Tuple <$> zoom _1 get <*> zoom (_2 <<< traversed) get
 
+data GetterTest = GetterTest Int
+
+getterTest :: GetterP GetterTest Int
+getterTest = to \ (GetterTest i) -> i
+
 main = do
   print $ view bars doc
   print stateTest
+  print $ show ((GetterTest 133) ^. getterTest)
