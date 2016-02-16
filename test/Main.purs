@@ -35,7 +35,59 @@ data GetterTest = GetterTest Int
 getterTest :: GetterP GetterTest Int
 getterTest = to \ (GetterTest i) -> i
 
+{--
+getterTestZho :: GetterP GetterTest Int
+getterTestZho = toZho $ \ (GetterTest i) -> i
+
+Error found:
+in module Test.Main
+at /Users/bkolera/src/purescript-profunctor-lenses/test/Main.purs line 39, column 17 - line 41, column 1
+
+  Could not match type
+    Int
+  with type
+    GetterTest
+
+while trying to match type _0 _1 _2
+  with type Forget Int GetterTest GetterTest
+while checking that expression (($) toZho) (\$7 ->
+                                              case $7 of
+                                                (GetterTest i) -> ...
+                                           )
+  has type Forget Int Int Int -> Forget Int GetterTest GetterTest
+in value declaration getterTestZho
+
+where _0 is an unknown type
+      _2 is an unknown type
+      _1 is an unknown type
+-}
+
 main = do
   print $ view bars doc
   print stateTest
-  print $ show ((GetterTest 133) ^. getterTest)
+  print $ show ((Tuple (GetterTest 1337) "Foo") ^. _1 <<< getterTest)
+  {--
+  print $ show ((Just $ GetterTest 1337) ^? _Just <<< getterTest )
+Error found:
+in module Test.Main
+at /Users/bkolera/src/purescript-profunctor-lenses/test/Main.purs line 69, column 17 - line 69, column 66
+
+  Could not match type
+
+    First _0
+
+  with type
+
+    Int
+
+
+while trying to match type Forget (First _0)
+  with type Forget Int
+while checking that expression ((<<<) _Just) getterTest
+  has type Forget (First _0) _0 _1 -> Forget (First _0) (Maybe GetterTest) _2
+in value declaration main
+
+where _1 is an unknown type
+      _0 is an unknown type
+      _2 is an unknown type
+  --}

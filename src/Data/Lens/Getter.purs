@@ -2,7 +2,7 @@
 
 module Data.Lens.Getter
   ( (^.)
-  , view, to, use, iview, iuse
+  , view, to, toZho, use, iview, iuse
   , module Data.Lens.Types
   ) where
 
@@ -16,7 +16,7 @@ import Data.Tuple (Tuple (..))
 import Control.Monad.State.Class (MonadState, gets)
 
 import Data.Lens.Internal.Forget (Forget (..), runForget)
-import Data.Lens.Types (Getter(), Fold())
+import Data.Lens.Types (Getter(), Fold(), Optic())
 import Data.Lens.Types (IndexedGetter(), Indexed (..))
 import Data.Lens.Types (IndexedFold())
 
@@ -37,6 +37,11 @@ iview l = runForget (l (Indexed $ Forget id))
 -- | Convert a function into a getter.
 to :: forall s a . (s -> a) -> Fold a s s a a
 to f p = Forget $ \ s ->  f s
+
+-- | Convert a function into a getter.
+toZho :: forall s t a p. (Profunctor p) => (s -> a) -> Optic p s t a t
+toZho = lmap
+
 
 -- | View the focus of a `Getter` in the state of a monad.
 use :: forall s t a b m. (MonadState s m) => Getter s t a b -> m a
